@@ -608,7 +608,6 @@
 
 
 
-
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Select from "react-select";
@@ -718,15 +717,15 @@ const Inventory = () => {
   }, {});
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-4 md:p-6 space-y-6">
       {/* Tabs + Toggle View */}
-      <div className="flex justify-between items-center flex-wrap gap-4">
-        <div className="flex gap-4 flex-wrap">
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 flex-wrap">
+        <div className="flex gap-2 flex-wrap">
           {tabs.map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`px-6 py-2 rounded-full font-semibold shadow-md ${
+              className={`px-4 py-2 rounded-full font-semibold shadow-md text-sm ${
                 activeTab === tab ? "bg-teal-500 text-white" : "bg-gray-200 text-gray-800"
               }`}
             >
@@ -736,7 +735,7 @@ const Inventory = () => {
         </div>
         <button
           onClick={() => setViewMode(viewMode === "unit" ? "cases" : "unit")}
-          className="border px-4 py-2 rounded-md text-sm font-semibold"
+          className="border px-4 py-2 rounded-md text-sm font-semibold w-full md:w-auto"
         >
           Switch to {viewMode === "unit" ? "Cases" : "Unit"} View
         </button>
@@ -744,7 +743,7 @@ const Inventory = () => {
 
       {activeTab === "Overview" && (
         <>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {channelKeys.map((key, idx) => (
               <div
                 key={idx}
@@ -766,12 +765,12 @@ const Inventory = () => {
           </div>
 
           <div className="bg-white p-4 rounded-lg shadow mt-6">
-            <div className="flex flex-wrap justify-between gap-4 mb-4">
+            <div className="flex flex-col lg:flex-row lg:justify-between gap-4 mb-4">
               <h2 className="text-lg font-bold">
                 Sellable Stock as of ({today}) in {viewMode === "unit" ? "Units" : "Cases"}
               </h2>
-              <div className="flex flex-wrap gap-2 z-50">
-                <div className="w-52">
+              <div className="flex flex-col md:flex-row flex-wrap gap-2 z-50">
+                <div className="w-full sm:w-52">
                   <Select
                     isMulti
                     options={skuOptions}
@@ -782,7 +781,7 @@ const Inventory = () => {
                     styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
                   />
                 </div>
-                <div className="w-52">
+                <div className="w-full sm:w-52">
                   <Select
                     isMulti
                     options={materialOptions}
@@ -795,7 +794,7 @@ const Inventory = () => {
                 </div>
                 <button
                   onClick={handleDownload}
-                  className="border px-4 py-2 rounded-md text-sm font-semibold"
+                  className="border px-4 py-2 rounded-md text-sm font-semibold w-full sm:w-auto"
                 >
                   Download all
                 </button>
@@ -806,7 +805,7 @@ const Inventory = () => {
               <p className="text-gray-500">Loading...</p>
             ) : (
               <div className="overflow-x-auto max-h-[500px] border rounded-md">
-                <table className="w-full text-sm text-left">
+                <table className="w-full text-sm text-left min-w-[600px]">
                   <thead className="bg-gray-100 sticky top-0 z-[1]">
                     <tr>
                       {["Channel", "SKU", "Box / Case", "Material"]
@@ -818,7 +817,7 @@ const Inventory = () => {
                         .map((col, idx) => (
                           <th
                             key={idx}
-                            className="px-4 py-2 font-semibold text-gray-600"
+                            className="px-4 py-2 font-semibold text-gray-600 whitespace-nowrap"
                           >
                             {col}
                           </th>
@@ -835,7 +834,7 @@ const Inventory = () => {
                             )
                           )
                           .map((col, idx) => (
-                            <td key={idx} className="px-4 py-2">
+                            <td key={idx} className="px-4 py-2 whitespace-nowrap">
                               {viewMode === "cases" && !isNaN(row[col]) && col !== "Box / Case"
                                 ? (() => {
                                     const box = parseFloat(row["Box / Case"]);

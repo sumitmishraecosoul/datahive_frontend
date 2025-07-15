@@ -5,9 +5,11 @@ import {
   BarChart,
   Package,
   LogOut,
+  X,
 } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
-import SidebarMenuBg from "../assets/img/Login_bg.png"; // ✅ Make sure the path is correct
+// import SidebarMenuBg from "../assets/img/Login_bg.png";
+import SidebarMenuBg from "../assets/img/sidebar_bg.svg";
 
 const navItems = [
   { name: "Dashboard", icon: Home, path: "/dashboard" },
@@ -19,7 +21,7 @@ const navItems = [
   { name: "Admin", icon: BarChart, path: "/admin" },
 ];
 
-const Sidebar = () => {
+const Sidebar = ({ closeSidebar }) => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -29,13 +31,20 @@ const Sidebar = () => {
 
   return (
     <div
-      className="h-screen w-60 text-white p-4 flex flex-col justify-between bg-cover bg-center"
+      className="h-screen w-60 text-white p-4 flex flex-col justify-between bg-cover bg-center bg-no-repeat"
       style={{
-        backgroundImage: `url(${SidebarMenuBg})`, // ✅ Background image
+        backgroundImage: `url(${SidebarMenuBg})`,
       }}
     >
       {/* Top Section */}
       <div>
+        {/* Close button for mobile */}
+        <div className="md:hidden flex justify-end mb-4">
+          <button onClick={closeSidebar}>
+            <X className="w-5 h-5 text-white" />
+          </button>
+        </div>
+
         <div className="flex items-center gap-2 mb-8 text-xl font-semibold">
           <Home className="w-6 h-6 text-white" />
           Ecosoul
@@ -48,6 +57,7 @@ const Sidebar = () => {
               <NavLink
                 to={item.path}
                 key={idx}
+                onClick={closeSidebar} // close on mobile nav click
                 className={({ isActive }) =>
                   `flex items-center gap-3 px-3 py-2 rounded-md cursor-pointer transition-all ${
                     isActive
