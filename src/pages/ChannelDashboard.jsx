@@ -405,292 +405,365 @@
 // export default ChannelDashboard;
 
 
-import React, { useState, useEffect, useMemo } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
-import { Bar } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js";
-import TabsNavigation from "../components/TabsNavigation";
-import SaleVsRevenue from "../components/SalesRevenueCharts";
-import POSalesVsUnshippedRevenue from "../components/POSalesVsUnshippedRevenue";
-import TopSellingSKUs from "../components/TopSellingSKUs";
-import OrderSummaryChart from "../components/OrderSummaryChart";
-import AllPOsTable from "../components/AllPOsTable";
-import FilterSidebar from "../components/FilterSidebar";
+// import React, { useState, useEffect, useMemo } from "react";
+// import { useParams, useNavigate } from "react-router-dom";
+// import axios from "axios";
+// import { Bar } from "react-chartjs-2";
+// import {
+//   Chart as ChartJS,
+//   CategoryScale,
+//   LinearScale,
+//   BarElement,
+//   Title,
+//   Tooltip,
+//   Legend,
+// } from "chart.js";
+// import TabsNavigation from "../components/TabsNavigation";
+// import SaleVsRevenue from "../components/SalesRevenueCharts";
+// import POSalesVsUnshippedRevenue from "../components/POSalesVsUnshippedRevenue";
+// import TopSellingSKUs from "../components/TopSellingSKUs";
+// import OrderSummaryChart from "../components/OrderSummaryChart";
+// import AllPOsTable from "../components/AllPOsTable";
+// import FilterSidebar from "../components/FilterSidebar";
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend
-);
+// ChartJS.register(
+//   CategoryScale,
+//   LinearScale,
+//   BarElement,
+//   Title,
+//   Tooltip,
+//   Legend
+// );
+
+// const ChannelDashboard = () => {
+//   const { channelName } = useParams();
+//   const navigate = useNavigate();
+//   const [allData, setAllData] = useState([]);
+//   const [filteredData, setFilteredData] = useState([]);
+//   const [loading, setLoading] = useState(true);
+//   const [activeTab, setActiveTab] = useState("executive");
+  
+//   // Filter state
+//   const [filters, setFilters] = useState({
+//     year: '',
+//     poNumber: '',
+//     month: '',
+//     sku: '',
+//     poStatus: ''
+//   });
+
+//   // Extract available filter options
+//   const filterOptions = useMemo(() => {
+//     if (allData.length === 0) return {};
+    
+//     // Extract unique values for each filter
+//     const years = [...new Set(allData.map(item => {
+//       if (!item['PO Creation Date']) return null;
+//       const dateParts = item['PO Creation Date'].split('-');
+//       return dateParts[2]; // Year part
+//     }).filter(Boolean))];
+    
+//     const poNumbers = [...new Set(allData.map(item => item['PO Number']))].filter(Boolean);
+//     const months = [...new Set(allData.map(item => {
+//       if (!item['PO Creation Date']) return null;
+//       const dateParts = item['PO Creation Date'].split('-');
+//       const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+//                          "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+//       return monthNames[parseInt(dateParts[1]) - 1];
+//     }).filter(Boolean))];
+    
+//     const skus = [...new Set(allData.map(item => item.SKU))].filter(Boolean);
+//     const poStatuses = [...new Set(allData.map(item => item['PO Status']))].filter(Boolean);
+    
+//     return {
+//       years: years.sort(),
+//       poNumbers,
+//       months,
+//       skus,
+//       poStatuses
+//     };
+//   }, [allData]);
+
+//   // Fetch data on component mount
+//   useEffect(() => {
+//     const fetchData = async () => {
+//       try {
+//         setLoading(true);
+//         const response = await axios.get("http://localhost:5000/api/quick-commerce");
+//         const channelData = response.data.filter(item => item.Channel === channelName);
+//         setAllData(channelData);
+//         setFilteredData(channelData);
+//         setLoading(false);
+//       } catch (err) {
+//         console.error("Error fetching data:", err);
+//         setLoading(false);
+//       }
+//     };
+
+//     fetchData();
+//   }, [channelName]);
+
+//   // Apply filters when they change
+//   useEffect(() => {
+//     if (allData.length === 0) return;
+    
+//     let result = [...allData];
+    
+//     // Apply each filter
+//     if (filters.year) {
+//       result = result.filter(item => {
+//         if (!item['PO Creation Date']) return false;
+//         const dateParts = item['PO Creation Date'].split('-');
+//         return dateParts[2] === filters.year;
+//       });
+//     }
+//     if (filters.poNumber) {
+//       result = result.filter(item => item['PO Number'] === filters.poNumber);
+//     }
+//     if (filters.month) {
+//       result = result.filter(item => {
+//         if (!item['PO Creation Date']) return false;
+//         const dateParts = item['PO Creation Date'].split('-');
+//         const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+//                           "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+//         return monthNames[parseInt(dateParts[1]) - 1] === filters.month;
+//       });
+//     }
+//     if (filters.sku) {
+//       result = result.filter(item => item.SKU === filters.sku);
+//     }
+//     if (filters.poStatus) {
+//       result = result.filter(item => item['PO Status'] === filters.poStatus);
+//     }
+    
+//     setFilteredData(result);
+//   }, [filters, allData]);
+
+//   const handleTabChange = (tabId) => {
+//     setActiveTab(tabId);
+//     if (tabId === "channelPerformance") {
+//       navigate("/quick-commerce/channel-performance");
+//     }
+//   };
+
+//   const handleFilterChange = (name, value) => {
+//     setFilters(prev => ({
+//       ...prev,
+//       [name]: value
+//     }));
+//   };
+
+//   const resetFilters = () => {
+//     setFilters({
+//       year: '',
+//       poNumber: '',
+//       month: '',
+//       sku: '',
+//       poStatus: ''
+//     });
+//   };
+
+//   // Calculate metrics based on filtered data
+//   const metrics = useMemo(() => {
+//     if (filteredData.length === 0) {
+//       return {
+//         sales: 832,
+//         revenue: 18300,
+//         lostRevenue: 868,
+//         fulfillmentRate: 17432,
+//         totalPOReceived: 868,
+//         poFulfilled: 850,
+//         poPending: 18
+//       };
+//     }
+    
+//     const sales = filteredData.reduce((sum, item) => sum + parseFloat(item["PO Sales"] || 0), 0);
+//     const revenue = filteredData.reduce((sum, item) => sum + parseFloat(item["Revenue"] || 0), 0);
+//     const lostRevenue = filteredData.reduce((sum, item) => sum + parseFloat(item["Revenue Lost"] || 0), 0);
+//     const fulfillmentRate = filteredData.reduce((sum, item) => sum + parseFloat(item["Avg. Fulfillment Rate (%)"] || 0), 0) / filteredData.length;
+    
+//     const uniquePOs = [...new Set(filteredData.map(item => item["PO Number"]))];
+//     const totalPOReceived = uniquePOs.length;
+    
+//     const fulfilledPOs = [...new Set(
+//       filteredData.filter(item => item["PO Status"] === "Fulfilled").map(item => item["PO Number"])
+//     )];
+//     const poFulfilled = fulfilledPOs.length;
+    
+//     const poPending = totalPOReceived - poFulfilled;
+    
+//     return {
+//       sales: Math.round(sales),
+//       revenue: Math.round(revenue),
+//       lostRevenue: Math.round(lostRevenue),
+//       fulfillmentRate: fulfillmentRate.toFixed(2),
+//       totalPOReceived,
+//       poFulfilled,
+//       poPending,
+//     };
+//   }, [filteredData]);
+
+//   if (loading) return <div className="p-4">Loading...</div>;
+
+//   return (
+//     <div className="p-4 bg-[#D4EAD9] min-h-screen">
+//       <div className="flex flex-col md:flex-row gap-4">
+//         {/* Main Content (Left Side - Scrollable) */}
+//         <div className="flex-1 overflow-y-auto">
+//           <div className="mx-auto">
+//             <TabsNavigation activeTab={activeTab} onTabChange={handleTabChange} />
+//             <div className="flex items-center">
+//               <button 
+//                 onClick={() => navigate('/quick-commerce/channel-performance')}
+//                 className="mr-4 px-4 py-2 text-xl font-semibold"
+//               >
+//                 ←  {channelName}
+//               </button>
+//             </div>
+            
+//             {/* Dashboard Content */}
+//             <>
+//               <div className="flex justify-between gap-5">
+//                 {/* Sales Overview */}
+//                 <div className="bg-white rounded-lg shadow p-6 mb-6">
+//                   <h2 className="text-xl font-semibold mb-4">Sales Overview</h2>
+//                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+//                     <div className="bg-blue-50 p-4 rounded-lg text-center">
+//                       <div className="text-xl font-bold">₹{metrics.sales?.toLocaleString('en-IN') || 0}</div>
+//                       <div className="text-gray-600">Total Sales</div>
+//                     </div>
+//                     <div className="bg-green-50 p-4 rounded-lg text-center">
+//                       <div className="text-xl font-bold">₹{metrics.revenue?.toLocaleString('en-IN') || 0}</div>
+//                       <div className="text-gray-600">Revenue</div>
+//                     </div>
+//                     <div className="bg-red-50 p-4 rounded-lg text-center">
+//                       <div className="text-xl font-bold">₹{metrics.lostRevenue?.toLocaleString('en-IN') || 0}</div>
+//                       <div className="text-gray-600">Lost Revenue</div>
+//                     </div>
+//                     <div className="bg-purple-50 p-4 rounded-lg text-center">
+//                       <div className="text-xl font-bold">{metrics.fulfillmentRate || 0}%</div>
+//                       <div className="text-gray-600">Fulfillment Rate</div>
+//                     </div>
+//                   </div>
+//                 </div>
+                
+//                 {/* PO Summary */}
+//                 <div className="bg-white rounded-lg shadow p-6 mb-6">
+//                   <h2 className="text-xl font-semibold mb-4">PO Summary</h2>
+//                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+//                     <div className="bg-yellow-50 p-4 rounded-lg text-center">
+//                       <div className="text-xl font-bold">{metrics.totalPOReceived || 0}</div>
+//                       <div className="text-gray-600">Total PO Received</div>
+//                     </div>
+//                     <div className="bg-teal-50 p-4 rounded-lg text-center">
+//                       <div className="text-xl font-bold">{metrics.poFulfilled || 0}</div>
+//                       <div className="text-gray-600">PO Fulfilled</div>
+//                     </div>
+//                     <div className="bg-orange-50 p-4 rounded-lg text-center">
+//                       <div className="text-xl font-bold">{metrics.poPending || 0}</div>
+//                       <div className="text-gray-600">PO Pending</div>
+//                     </div>
+//                   </div>
+//                 </div>
+//               </div>
+              
+//               <div className="flex flex-row gap-4">
+//               <SaleVsRevenue data={filteredData} />
+//                 <POSalesVsUnshippedRevenue data={filteredData} />
+//               </div>
+              
+//               <div className="flex flex-row gap-4">
+//                 <TopSellingSKUs data={filteredData} />
+//                 <OrderSummaryChart data={filteredData} />
+//               </div>
+              
+//               <AllPOsTable data={filteredData} />
+//             </>
+//           </div>
+//         </div>
+        
+//         {/* Filters Sidebar (Right Side - Fixed) */}
+//         <div className="w-full md:w-80 sticky top-4 self-start">
+//           <FilterSidebar 
+//             options={filterOptions} 
+//             currentFilters={filters}
+//             onFilterChange={handleFilterChange}
+//             onReset={resetFilters}
+//           />
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default ChannelDashboard;
+
+
+
+// src/pages/ChannelDashboard.jsx
+// ChannelDashboard.jsx
+
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import SaleVsRevenue from './SaleVsRevenue';
+import FilterSidebar from './FilterSidebar';
 
 const ChannelDashboard = () => {
-  const { channelName } = useParams();
-  const navigate = useNavigate();
   const [allData, setAllData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState("executive");
-  
-  // Filter state
   const [filters, setFilters] = useState({
     year: '',
-    poNumber: '',
     month: '',
+    poNumber: '',
     sku: '',
     poStatus: ''
   });
 
-  // Extract available filter options
-  const filterOptions = useMemo(() => {
-    if (allData.length === 0) return {};
-    
-    // Extract unique values for each filter
-    const years = [...new Set(allData.map(item => {
-      if (!item['PO Creation Date']) return null;
-      const dateParts = item['PO Creation Date'].split('-');
-      return dateParts[2]; // Year part
-    }).filter(Boolean))];
-    
-    const poNumbers = [...new Set(allData.map(item => item['PO Number']))].filter(Boolean);
-    const months = [...new Set(allData.map(item => {
-      if (!item['PO Creation Date']) return null;
-      const dateParts = item['PO Creation Date'].split('-');
-      const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
-                         "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-      return monthNames[parseInt(dateParts[1]) - 1];
-    }).filter(Boolean))];
-    
-    const skus = [...new Set(allData.map(item => item.SKU))].filter(Boolean);
-    const poStatuses = [...new Set(allData.map(item => item['PO Status']))].filter(Boolean);
-    
-    return {
-      years: years.sort(),
-      poNumbers,
-      months,
-      skus,
-      poStatuses
-    };
-  }, [allData]);
-
-  // Fetch data on component mount
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setLoading(true);
-        const response = await axios.get("http://localhost:5000/api/quick-commerce");
-        const channelData = response.data.filter(item => item.Channel === channelName);
-        setAllData(channelData);
-        setFilteredData(channelData);
-        setLoading(false);
-      } catch (err) {
-        console.error("Error fetching data:", err);
-        setLoading(false);
+        const response = await axios.get('http://localhost:5000/api/quick-commerce-executive');
+        setAllData(response.data);
+        setFilteredData(response.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
       }
     };
-
     fetchData();
-  }, [channelName]);
+  }, []);
 
-  // Apply filters when they change
   useEffect(() => {
-    if (allData.length === 0) return;
-    
-    let result = [...allData];
-    
-    // Apply each filter
-    if (filters.year) {
-      result = result.filter(item => {
-        if (!item['PO Creation Date']) return false;
-        const dateParts = item['PO Creation Date'].split('-');
-        return dateParts[2] === filters.year;
-      });
-    }
-    if (filters.poNumber) {
-      result = result.filter(item => item['PO Number'] === filters.poNumber);
-    }
-    if (filters.month) {
-      result = result.filter(item => {
-        if (!item['PO Creation Date']) return false;
-        const dateParts = item['PO Creation Date'].split('-');
-        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
-                          "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-        return monthNames[parseInt(dateParts[1]) - 1] === filters.month;
-      });
-    }
-    if (filters.sku) {
-      result = result.filter(item => item.SKU === filters.sku);
-    }
-    if (filters.poStatus) {
-      result = result.filter(item => item['PO Status'] === filters.poStatus);
-    }
-    
-    setFilteredData(result);
+    const newData = allData.filter(item => {
+      const [day, month, year] = item['PO Creation Date']?.split('-') || [];
+      return (
+        (!filters.year || year === filters.year) &&
+        (!filters.month || month === filters.month) &&
+        (!filters.poNumber || item['PO Number'] === filters.poNumber) &&
+        (!filters.sku || item['SKU'] === filters.sku) &&
+        (!filters.poStatus || item['PO Status'] === filters.poStatus)
+      );
+    });
+    setFilteredData(newData);
   }, [filters, allData]);
 
-  const handleTabChange = (tabId) => {
-    setActiveTab(tabId);
-    if (tabId === "channelPerformance") {
-      navigate("/quick-commerce/channel-performance");
-    }
+  const filterOptions = {
+    years: [...new Set(allData.map(item => item['PO Creation Date']?.split('-')[2]))].filter(Boolean),
+    months: [...new Set(allData.map(item => item['PO Creation Date']?.split('-')[1]))].filter(Boolean),
+    poNumbers: [...new Set(allData.map(item => item['PO Number']))].filter(Boolean),
+    skus: [...new Set(allData.map(item => item['SKU']))].filter(Boolean),
+    poStatuses: [...new Set(allData.map(item => item['PO Status']))].filter(Boolean),
   };
-
-  const handleFilterChange = (name, value) => {
-    setFilters(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const resetFilters = () => {
-    setFilters({
-      year: '',
-      poNumber: '',
-      month: '',
-      sku: '',
-      poStatus: ''
-    });
-  };
-
-  // Calculate metrics based on filtered data
-  const metrics = useMemo(() => {
-    if (filteredData.length === 0) {
-      return {
-        sales: 832,
-        revenue: 18300,
-        lostRevenue: 868,
-        fulfillmentRate: 17432,
-        totalPOReceived: 868,
-        poFulfilled: 850,
-        poPending: 18
-      };
-    }
-    
-    const sales = filteredData.reduce((sum, item) => sum + parseFloat(item["PO Sales"] || 0), 0);
-    const revenue = filteredData.reduce((sum, item) => sum + parseFloat(item["Revenue"] || 0), 0);
-    const lostRevenue = filteredData.reduce((sum, item) => sum + parseFloat(item["Revenue Lost"] || 0), 0);
-    const fulfillmentRate = filteredData.reduce((sum, item) => sum + parseFloat(item["Avg. Fulfillment Rate (%)"] || 0), 0) / filteredData.length;
-    
-    const uniquePOs = [...new Set(filteredData.map(item => item["PO Number"]))];
-    const totalPOReceived = uniquePOs.length;
-    
-    const fulfilledPOs = [...new Set(
-      filteredData.filter(item => item["PO Status"] === "Fulfilled").map(item => item["PO Number"])
-    )];
-    const poFulfilled = fulfilledPOs.length;
-    
-    const poPending = totalPOReceived - poFulfilled;
-    
-    return {
-      sales: Math.round(sales),
-      revenue: Math.round(revenue),
-      lostRevenue: Math.round(lostRevenue),
-      fulfillmentRate: fulfillmentRate.toFixed(2),
-      totalPOReceived,
-      poFulfilled,
-      poPending,
-    };
-  }, [filteredData]);
-
-  if (loading) return <div className="p-4">Loading...</div>;
 
   return (
-    <div className="p-4 bg-[#D4EAD9] min-h-screen">
-      <div className="flex flex-col md:flex-row gap-4">
-        {/* Main Content (Left Side - Scrollable) */}
-        <div className="flex-1 overflow-y-auto">
-          <div className="mx-auto">
-            <TabsNavigation activeTab={activeTab} onTabChange={handleTabChange} />
-            <div className="flex items-center">
-              <button 
-                onClick={() => navigate('/quick-commerce/channel-performance')}
-                className="mr-4 px-4 py-2 text-xl font-semibold"
-              >
-                ←  {channelName}
-              </button>
-            </div>
-            
-            {/* Dashboard Content */}
-            <>
-              <div className="flex justify-between gap-5">
-                {/* Sales Overview */}
-                <div className="bg-white rounded-lg shadow p-6 mb-6">
-                  <h2 className="text-xl font-semibold mb-4">Sales Overview</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <div className="bg-blue-50 p-4 rounded-lg text-center">
-                      <div className="text-xl font-bold">₹{metrics.sales?.toLocaleString('en-IN') || 0}</div>
-                      <div className="text-gray-600">Total Sales</div>
-                    </div>
-                    <div className="bg-green-50 p-4 rounded-lg text-center">
-                      <div className="text-xl font-bold">₹{metrics.revenue?.toLocaleString('en-IN') || 0}</div>
-                      <div className="text-gray-600">Revenue</div>
-                    </div>
-                    <div className="bg-red-50 p-4 rounded-lg text-center">
-                      <div className="text-xl font-bold">₹{metrics.lostRevenue?.toLocaleString('en-IN') || 0}</div>
-                      <div className="text-gray-600">Lost Revenue</div>
-                    </div>
-                    <div className="bg-purple-50 p-4 rounded-lg text-center">
-                      <div className="text-xl font-bold">{metrics.fulfillmentRate || 0}%</div>
-                      <div className="text-gray-600">Fulfillment Rate</div>
-                    </div>
-                  </div>
-                </div>
-                
-                {/* PO Summary */}
-                <div className="bg-white rounded-lg shadow p-6 mb-6">
-                  <h2 className="text-xl font-semibold mb-4">PO Summary</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="bg-yellow-50 p-4 rounded-lg text-center">
-                      <div className="text-xl font-bold">{metrics.totalPOReceived || 0}</div>
-                      <div className="text-gray-600">Total PO Received</div>
-                    </div>
-                    <div className="bg-teal-50 p-4 rounded-lg text-center">
-                      <div className="text-xl font-bold">{metrics.poFulfilled || 0}</div>
-                      <div className="text-gray-600">PO Fulfilled</div>
-                    </div>
-                    <div className="bg-orange-50 p-4 rounded-lg text-center">
-                      <div className="text-xl font-bold">{metrics.poPending || 0}</div>
-                      <div className="text-gray-600">PO Pending</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="flex flex-row gap-4">
-                <SaleVsRevenue data={filteredData} />
-                <POSalesVsUnshippedRevenue data={filteredData} />
-              </div>
-              
-              <div className="flex flex-row gap-4">
-                <TopSellingSKUs data={filteredData} />
-                <OrderSummaryChart data={filteredData} />
-              </div>
-              
-              <AllPOsTable data={filteredData} />
-            </>
-          </div>
-        </div>
-        
-        {/* Filters Sidebar (Right Side - Fixed) */}
-        <div className="w-full md:w-80 sticky top-4 self-start">
-          <FilterSidebar 
-            options={filterOptions} 
-            currentFilters={filters}
-            onFilterChange={handleFilterChange}
-            onReset={resetFilters}
-          />
-        </div>
+    <div className="flex gap-4 p-4">
+      <FilterSidebar
+        options={filterOptions}
+        currentFilters={filters}
+        onFilterChange={(key, value) => setFilters(prev => ({ ...prev, [key]: value }))}
+        onReset={() => setFilters({ year: '', month: '', poNumber: '', sku: '', poStatus: '' })}
+      />
+      <div className="flex-1">
+        <SaleVsRevenue data={filteredData} />
       </div>
     </div>
   );

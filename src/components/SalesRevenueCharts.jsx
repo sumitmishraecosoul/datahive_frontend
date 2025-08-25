@@ -974,38 +974,154 @@
 
 
 
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+// import React, { useState, useEffect } from 'react';
+// import axios from 'axios';
+// import { BarChart } from '@mui/x-charts/BarChart';
+
+// const SaleVsRevenue = () => {
+//   const [data, setData] = useState([]);
+//   const [loading, setLoading] = useState(true);
+//   const [chartWidth, setChartWidth] = useState(600);
+
+//   useEffect(() => {
+//     const fetchData = async () => {
+//       try {
+//         const response = await axios.get('http://localhost:5000/api/quick-commerce-executive');
+//         setData(response.data);
+        
+//         // Calculate chart width based on number of months
+//         const months = [...new Set(response.data.map(item => {
+//           const date = new Date(item['PO Creation Date']);
+//           if (isNaN(date)) return null;
+//           return `${date.toLocaleString('default', { month: 'short' })}-${date.getFullYear().toString().slice(2)}`;
+//         }).filter(Boolean))];
+        
+//         setChartWidth(Math.max(600, months.length * 80));
+//         setLoading(false);
+//       } catch (error) {
+//         console.error('Error fetching data:', error);
+//         setLoading(false);
+//       }
+//     };
+
+//     fetchData();
+//   }, []);
+
+//   const processChartData = () => {
+//     const monthlyData = {};
+
+//     data.forEach(item => {
+//       const date = new Date(item['PO Creation Date']);
+//       if (isNaN(date)) return;
+
+//       const month = date.toLocaleString('default', { month: 'short' });
+//       const year = date.getFullYear().toString().slice(2);
+//       const monthYear = `${month}-${year}`;
+      
+//       if (!monthlyData[monthYear]) {
+//         monthlyData[monthYear] = {
+//           sales: 0,
+//           revenue: 0
+//         };
+//       }
+
+//       monthlyData[monthYear].sales += parseFloat(item['PO Sales'] || 0);
+//       monthlyData[monthYear].revenue += parseFloat(item['Received_Revenue'] || 0);
+//     });
+
+//     const sortedMonths = Object.keys(monthlyData).sort((a, b) => {
+//       const [aMonth, aYear] = a.split('-');
+//       const [bMonth, bYear] = b.split('-');
+//       const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+//                      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+//       return (parseInt(aYear) - parseInt(bYear)) || 
+//              (months.indexOf(aMonth) - months.indexOf(bMonth));
+//     });
+
+//     return {
+//       months: sortedMonths,
+//       sales: sortedMonths.map(month => monthlyData[month].sales),
+//       revenue: sortedMonths.map(month => monthlyData[month].revenue)
+//     };
+//   };
+
+//   const chartData = processChartData();
+
+//   if (loading) return <div className="p-4">Loading...</div>;
+
+//   return (
+//     <div className="bg-white rounded-lg shadow p-6 flex-1 min-w-[50%]">
+//       <h2 className="text-xl font-semibold mb-4">Sales vs Revenue</h2>
+//       <div className="overflow-x-auto">
+//         <div style={{ width: `${chartWidth}px`, height: '320px' }}>
+//           <BarChart
+//             series={[
+//               { 
+//                 data: chartData.sales, 
+//                 label: 'Sales', 
+//                 color: '#3b82f6',
+//                 barSize: 30,
+//               },
+//               { 
+//                 data: chartData.revenue, 
+//                 label: 'Revenue', 
+//                 color: '#10b981',
+//                 barSize: 30,
+//               }
+//             ]}
+//             xAxis={[{
+//               scaleType: 'band',
+//               data: chartData.months,
+//               categoryGapRatio: 0.7,
+//               barGapRatio: 0.2,
+//             }]}
+//             yAxis={[{
+//               disableLine: true,
+//               disableTicks: true,
+//               valueFormatter: () => '',
+//               tickLabelStyle: { display: 'none' },
+//             }]}
+//             margin={{ top: 20, bottom: 50, left: 10, right: 20 }}
+//             slotProps={{
+//               legend: {
+//                 direction: 'row',
+//                 position: { vertical: 'top', horizontal: 'right' },
+//                 padding: 0,
+//               },
+//               axis: {
+//                 tickLabel: {
+//                   display: 'none',
+//                 }
+//               }
+//             }}
+//             grid={{ vertical: false, horizontal: false }}
+//           />
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+
+
+// export default SaleVsRevenue;
+
+
+// SaleVsRevenue.jsx
+import React, { useEffect, useState } from 'react';
 import { BarChart } from '@mui/x-charts/BarChart';
 
-const SaleVsRevenue = () => {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
+const SaleVsRevenue = ({ data }) => {
   const [chartWidth, setChartWidth] = useState(600);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get('http://localhost:5000/api/quick-commerce-executive');
-        setData(response.data);
-        
-        // Calculate chart width based on number of months
-        const months = [...new Set(response.data.map(item => {
-          const date = new Date(item['PO Creation Date']);
-          if (isNaN(date)) return null;
-          return `${date.toLocaleString('default', { month: 'short' })}-${date.getFullYear().toString().slice(2)}`;
-        }).filter(Boolean))];
-        
-        setChartWidth(Math.max(600, months.length * 80));
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
+    const months = [...new Set(data.map(item => {
+      const date = new Date(item['PO Creation Date']);
+      if (isNaN(date)) return null;
+      return `${date.toLocaleString('default', { month: 'short' })}-${date.getFullYear().toString().slice(2)}`;
+    }).filter(Boolean))];
+    setChartWidth(Math.max(600, months.length * 80));
+  }, [data]);
 
   const processChartData = () => {
     const monthlyData = {};
@@ -1017,12 +1133,9 @@ const SaleVsRevenue = () => {
       const month = date.toLocaleString('default', { month: 'short' });
       const year = date.getFullYear().toString().slice(2);
       const monthYear = `${month}-${year}`;
-      
+
       if (!monthlyData[monthYear]) {
-        monthlyData[monthYear] = {
-          sales: 0,
-          revenue: 0
-        };
+        monthlyData[monthYear] = { sales: 0, revenue: 0 };
       }
 
       monthlyData[monthYear].sales += parseFloat(item['PO Sales'] || 0);
@@ -1030,12 +1143,10 @@ const SaleVsRevenue = () => {
     });
 
     const sortedMonths = Object.keys(monthlyData).sort((a, b) => {
+      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
       const [aMonth, aYear] = a.split('-');
       const [bMonth, bYear] = b.split('-');
-      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
-                     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-      return (parseInt(aYear) - parseInt(bYear)) || 
-             (months.indexOf(aMonth) - months.indexOf(bMonth));
+      return (parseInt(aYear) - parseInt(bYear)) || (months.indexOf(aMonth) - months.indexOf(bMonth));
     });
 
     return {
@@ -1047,7 +1158,7 @@ const SaleVsRevenue = () => {
 
   const chartData = processChartData();
 
-  if (loading) return <div className="p-4">Loading...</div>;
+  if (!data || data.length === 0) return <div className="p-4">No data available</div>;
 
   return (
     <div className="bg-white rounded-lg shadow p-6 flex-1 min-w-[50%]">
@@ -1056,43 +1167,14 @@ const SaleVsRevenue = () => {
         <div style={{ width: `${chartWidth}px`, height: '320px' }}>
           <BarChart
             series={[
-              { 
-                data: chartData.sales, 
-                label: 'Sales', 
-                color: '#3b82f6',
-                barSize: 30,
-              },
-              { 
-                data: chartData.revenue, 
-                label: 'Revenue', 
-                color: '#10b981',
-                barSize: 30,
-              }
+              { data: chartData.sales, label: 'Sales', color: '#3b82f6', barSize: 30 },
+              { data: chartData.revenue, label: 'Revenue', color: '#10b981', barSize: 30 }
             ]}
-            xAxis={[{
-              scaleType: 'band',
-              data: chartData.months,
-              categoryGapRatio: 0.7,
-              barGapRatio: 0.2,
-            }]}
-            yAxis={[{
-              disableLine: true,
-              disableTicks: true,
-              valueFormatter: () => '',
-              tickLabelStyle: { display: 'none' },
-            }]}
+            xAxis={[{ scaleType: 'band', data: chartData.months }]}
+            yAxis={[{ valueFormatter: () => '' }]}
             margin={{ top: 20, bottom: 50, left: 10, right: 20 }}
             slotProps={{
-              legend: {
-                direction: 'row',
-                position: { vertical: 'top', horizontal: 'right' },
-                padding: 0,
-              },
-              axis: {
-                tickLabel: {
-                  display: 'none',
-                }
-              }
+              legend: { direction: 'row', position: { vertical: 'top', horizontal: 'right' } }
             }}
             grid={{ vertical: false, horizontal: false }}
           />
@@ -1101,7 +1183,5 @@ const SaleVsRevenue = () => {
     </div>
   );
 };
-
-
 
 export default SaleVsRevenue;

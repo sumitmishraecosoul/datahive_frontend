@@ -611,6 +611,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Select from "react-select";
+import QuickEcommerce from "./QuickEcommerce";
 
 const Inventory = () => {
   const [data, setData] = useState([]);
@@ -697,7 +698,7 @@ const Inventory = () => {
   };
 
   const today = new Date().toLocaleDateString();
-  const tabs = ["Overview", "Shipments", "Warehouse", "Amazon", "ZOHO"];
+  const tabs = ["Overview", "Shipments", "Warehouse", "Amazon", "ZOHO", "Quick Commerce"];
 
   const channelKeys = Object.keys(data[0] || {}).filter(
     key => !["SKU", "Box / Case", "Material", "Channel"].includes(key)
@@ -733,14 +734,14 @@ const Inventory = () => {
             </button>
           ))}
         </div>
-        <button
+      { activeTab == "Overview" && ( <button
           onClick={() => setViewMode(viewMode === "unit" ? "cases" : "unit")}
           className="border px-4 py-2 rounded-md text-sm font-semibold w-full md:w-auto"
         >
           Switch to {viewMode === "unit" ? "Cases" : "Unit"} View
-        </button>
+        </button>)}
       </div>
-
+      
       {activeTab === "Overview" && (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -854,8 +855,13 @@ const Inventory = () => {
           </div>
         </>
       )}
+      
 
-      {activeTab !== "Overview" && (
+      {activeTab === "Quick Commerce" && (
+        <QuickEcommerce />
+      )}
+
+      {activeTab !== "Overview" && activeTab !== "Quick Commerce" && (
         <div className="bg-white p-10 rounded-lg shadow text-center text-gray-500">
           {activeTab} content coming soon...
         </div>
