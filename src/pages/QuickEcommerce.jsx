@@ -3,21 +3,15 @@ import React, { useEffect, useState } from "react";
 import Select from "react-select";
 
 import {
-
   BarChart,
-
   Bar,
-
   XAxis,
-
   LabelList,
-
   ResponsiveContainer,
-
   Tooltip,
-
 } from "recharts";
 
+import API_BASE_URL from '../utils/apiConfig';
  
 
 // Helper to pad chart data to always show 5 bars
@@ -130,11 +124,29 @@ const QuickEcommerce = () => {
 
     setLoading(true);
 
-    fetch("http://localhost:5000/summary")
+    console.log('Fetching from:', `${API_BASE_URL}/summary`);
 
-      .then((res) => res.json())
+    
+
+    fetch(`${API_BASE_URL}/summary`)
+
+      .then((res) => {
+
+        console.log('Response status:', res.status);
+
+        if (!res.ok) {
+
+          throw new Error(`HTTP error! status: ${res.status}`);
+
+        }
+
+        return res.json();
+
+      })
 
       .then((data) => {
+
+        console.log('API Response:', data);
 
         setSummary(data.summary || {});
 
@@ -181,19 +193,13 @@ const QuickEcommerce = () => {
         setStockStatusOptions(
           uniqueStockStatuses.map((status) => ({ label: status, value: status }))
         );
-
       })
-
-      .catch(() => {
-
+      .catch((error) => {
+        console.error('API Error:', error);
         setSummary({});
-
         setTable([]);
-
         setFilteredTable([]);
-
       })
-
       .finally(() => setLoading(false));
 
   }, []);

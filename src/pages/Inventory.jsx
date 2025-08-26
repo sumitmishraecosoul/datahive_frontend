@@ -408,6 +408,7 @@
 
 
 
+
 // import React, { useEffect, useState } from "react";
 // import axios from "axios";
 // import Select from "react-select";
@@ -612,6 +613,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Select from "react-select";
 import QuickEcommerce from "./QuickEcommerce";
+import API_BASE_URL from '../utils/apiConfig';
 
 const Inventory = () => {
   const [data, setData] = useState([]);
@@ -627,19 +629,15 @@ const Inventory = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/inventory");
+        console.log('Fetching inventory from:', `${API_BASE_URL}/api/inventory`);
+        const res = await axios.get(`${API_BASE_URL}/api/inventory`);
+        console.log('Inventory API Response:', res.data);
         const raw = res.data;
         setData(raw);
         setFilteredData(raw);
-
-        const uniqueSKUs = [...new Set(raw.map((item) => item.SKU))].filter(Boolean);
-        const uniqueMaterials = [...new Set(raw.map((item) => item["Material"]))].filter((m) => m && m !== "0");
-
-        setSkuOptions(uniqueSKUs.map((s) => ({ label: s, value: s })));
-        setMaterialOptions(uniqueMaterials.map((m) => ({ label: m, value: m })));
-      } catch (err) {
-        console.error("Fetch error", err);
-      } finally {
+        setLoading(false);
+      } catch (error) {
+        console.error('Inventory API Error:', error);
         setLoading(false);
       }
     };

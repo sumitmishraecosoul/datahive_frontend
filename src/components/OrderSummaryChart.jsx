@@ -274,6 +274,7 @@
 
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import API_BASE_URL from '../utils/apiConfig';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 
@@ -287,7 +288,7 @@ const OrderSummaryChart = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/quick-commerce-executive');
+        const response = await axios.get(`${API_BASE_URL}/api/quick-commerce-executive`);
         setData(response.data);
         
         // Extract available years from data

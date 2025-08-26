@@ -1418,6 +1418,7 @@ import TopSellingSKUs from "../components/TopSellingSKUs";
 import OrderSummaryChart from "../components/OrderSummaryChart";
 import AllPOsTable from "../components/AllPOsTable";
 import FilterSidebar from "../components/FilterSidebar";
+import API_BASE_URL from '../utils/apiConfig';
 
 const ChannelDashboard = () => {
   const { channelName } = useParams();
@@ -1441,7 +1442,7 @@ const ChannelDashboard = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await axios.get("http://localhost:5000/api/quick-commerce");
+        const response = await axios.get(`${API_BASE_URL}/api/quick-commerce`);
         const channelData = response.data.filter(item => item.Channel === channelName);
         setAllData(channelData);
         setFilteredData(channelData);

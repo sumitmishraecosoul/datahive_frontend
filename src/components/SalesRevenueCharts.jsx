@@ -745,70 +745,59 @@
 //     <div className="bg-white rounded-lg shadow p-6">
 //       <h2 className="text-xl font-semibold mb-4">Sale vs Revenue</h2>
       
-//       {/* <div className="flex mb-4">
-//         <div className="mr-8">
-//           <h3 className="text-gray-600 font-medium">Last Revenue</h3>
-//           <ul className="mt-2 space-y-1">
-//             {topProducts.map((product, index) => (
-//               <li key={index} className="text-gray-500">{product}</li>
-//             ))}
-//             {chartData.months.map((month, index) => (
-//               <li key={`month-${index}`} className="text-gray-500">{month}</li>
-//             ))}
-//           </ul>
-//         </div>
-//         <div>
-//           <h3 className="text-gray-600 font-medium">Purchase</h3>
-//           <ul className="mt-2 space-y-1">
-//             <li className="text-gray-500">Sales</li>
-//           </ul>
-//         </div>
-//       </div> */}
-
-//       <div className="h-80">
+      
+//       <div className="flex justify-between">
+//         <div className="h-80">
 //         <BarChart
 //           series={[
 //             { 
 //               data: chartData.sales, 
 //               label: 'Sales', 
 //               color: '#3b82f6',
-//               // Reduce bar width
-//               barSize: 30, // Reduced from default 50
+//               barSize: 30,
 //             },
 //             { 
 //               data: chartData.revenue, 
 //               label: 'Revenue', 
 //               color: '#10b981',
-//               // Reduce bar width
-//               barSize: 30, // Reduced from default 50
+//               barSize: 30,
 //             }
 //           ]}
 //           xAxis={[{
 //             scaleType: 'band',
 //             data: chartData.months,
-//             // Adjust gaps to reduce bar width
-//             categoryGapRatio: 0.6, // Increased from default 0.2
-//             barGapRatio: 0.05, // Reduced from default 0.1
+//             // Reduced gap between bars
+//             categoryGapRatio: 0.7,
+//             barGapRatio: 0.2,
 //           }]}
-//           // Remove y-axis line
-//           leftAxis={null}
-//           // Hide y-axis line and ticks
+//           // Hide y-axis completely
 //           yAxis={[{
-//             valueFormatter: (value) => `₹${value.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`,
-//             disableLine: true, // Hide y-axis line
-//             disableTicks: true, // Hide y-axis ticks
+//             disableLine: true,
+//             disableTicks: true,
+//             valueFormatter: () => '', // Hide values
+//             tickLabelStyle: { display: 'none' }, // Hide tick labels
 //           }]}
-//           margin={{ top: 20, bottom: 50, left: 20, right: 20 }} // Reduced left margin
+//           margin={{ top: 20, bottom: 50, left: 10, right: 20 }} // Reduced left margin
 //           slotProps={{
 //             legend: {
 //               direction: 'row',
 //               position: { vertical: 'top', horizontal: 'right' },
 //               padding: 0,
 //             },
+//             axis: {
+//               tickLabel: {
+//                 display: 'none', // Hide x-axis tick labels if needed
+//               }
+//             }
 //           }}
 //           // Hide grid lines
 //           grid={{ vertical: false, horizontal: false }}
+//           // Hide tooltip if desired
+//           // tooltip={{ trigger: 'none' }}
 //         />
+      
+//       </div>
+      
 //       </div>
 //     </div>
 //   );
@@ -940,8 +929,8 @@
 //           yAxis={[{
 //             disableLine: true,
 //             disableTicks: true,
-//             valueFormatter: () => '', // Hide values
-//             tickLabelStyle: { display: 'none' }, // Hide tick labels
+//             valueFormatter: () => '',
+//             tickLabelStyle: { display: 'none' },
 //           }]}
 //           margin={{ top: 20, bottom: 50, left: 10, right: 20 }} // Reduced left margin
 //           slotProps={{
@@ -952,7 +941,7 @@
 //             },
 //             axis: {
 //               tickLabel: {
-//                 display: 'none', // Hide x-axis tick labels if needed
+//                 display: 'none',
 //               }
 //             }
 //           }}
@@ -1110,6 +1099,7 @@
 // SaleVsRevenue.jsx
 import React, { useEffect, useState } from 'react';
 import { BarChart } from '@mui/x-charts/BarChart';
+import API_BASE_URL from '../utils/apiConfig';
 
 const SaleVsRevenue = ({ data }) => {
   const [chartWidth, setChartWidth] = useState(600);

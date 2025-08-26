@@ -707,6 +707,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import SaleVsRevenue from './SaleVsRevenue';
 import FilterSidebar from './FilterSidebar';
+import API_BASE_URL from '../utils/apiConfig';
 
 const ChannelDashboard = () => {
   const [allData, setAllData] = useState([]);
@@ -722,7 +723,7 @@ const ChannelDashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/quick-commerce-executive');
+        const response = await axios.get(`${API_BASE_URL}/api/quick-commerce-executive`);
         setAllData(response.data);
         setFilteredData(response.data);
       } catch (error) {

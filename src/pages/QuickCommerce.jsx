@@ -15,6 +15,7 @@ import {
 } from "chart.js";
 import ChannelPerformance from "./ChannelPerformance";
 import Channel from "./Channel";
+import API_BASE_URL from '../utils/apiConfig';
 
 // Register ChartJS components
 ChartJS.register(
@@ -581,7 +582,9 @@ const QuickCommerce = ({ defaultTab = "quickCommerce" }) => {
   const fetchQuickCommerceData = async () => {
     try {
       setLoading(true);
-      const response = await axios.get("http://localhost:5000/api/quick-commerce");
+      console.log('Fetching quick commerce from:', `${API_BASE_URL}/api/quick-commerce`);
+      const response = await axios.get(`${API_BASE_URL}/api/quick-commerce`);
+      console.log('Quick Commerce API Response:', response.data);
       const records = response.data;
 
       const cleaned = records.map(row => ({
